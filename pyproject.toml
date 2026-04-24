@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "peachfuzz-ai"
-version = "0.1.0"
+version = "0.4.0"
 description = "Defensive AI-assisted fuzzing harness with crash triage and self-refinement advisories"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -29,6 +29,7 @@ fuzz = ["atheris>=2.3.0"]
 
 [project.scripts]
 peachfuzz = "peachfuzz_ai.cli:main"
+cactusfuzz = "cactusfuzz.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

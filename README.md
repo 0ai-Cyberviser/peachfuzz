@@ -75,3 +75,45 @@ flowchart TD
 ## Project status
 
 Initial release: `v0.1.0`
+
+
+## Mythos Glasswing self-refinement
+
+PeachFuzz v0.2.0 adds **Mythos Glasswing**, a polished self-refinement profile that analyzes fuzz reports and writes human-reviewable update proposals.
+
+```bash
+python -m peachfuzz_ai.cli run --target json --runs 500 corpus/json_api
+python -m peachfuzz_ai.cli refine --report-dir reports --output MYTHOS_GLASSWING_PLAN.md
+```
+
+This mode is proposal-only: it does not auto-merge, push, scan networks, exploit targets, or bypass review.
+
+
+## peachfuzz-cactusfuzz split
+
+This project now has two editions:
+
+- **PeachFuzz**: defensive blue-team fuzzing only.
+- **CactusFuzz**: authorized red-team/adversarial fuzzing for owned/lab systems and AI-agent safety testing.
+
+```bash
+peachfuzz editions
+peachfuzz run --target json --runs 250 corpus/json_api
+cactusfuzz --target local-lab --scope local-lab
+```
+
+CactusFuzz is scope-gated and simulation-first. It does not enable unauthorized scanning, exploit delivery, shell payloads, credential theft, persistence, or third-party contact by default.
+
+
+## Competitive radar and number-one roadmap
+
+PeachFuzz/CactusFuzz v0.4.0 adds an offline competitive radar derived from public GitHub discovery.
+
+```bash
+peachfuzz radar
+peachfuzz radar --format json
+peachfuzz roadmap
+peachfuzz roadmap --format json
+```
+
+Use this to guide feature priority without adding unsafe scraping behavior to CI.

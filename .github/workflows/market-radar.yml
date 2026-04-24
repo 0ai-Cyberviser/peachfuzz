@@ -1,0 +1,30 @@
+name: PeachFuzz/CactusFuzz Market Radar
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/peachfuzz_ai/radar.py"
+      - "src/peachfuzz_ai/roadmap.py"
+      - "docs/COMPETITIVE_RADAR.md"
+      - "docs/NUMBER_ONE_ROADMAP.md"
+
+permissions:
+  contents: read
+
+jobs:
+  radar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+      - run: pytest -q tests/test_radar.py
+      - run: peachfuzz radar
+      - run: peachfuzz roadmap

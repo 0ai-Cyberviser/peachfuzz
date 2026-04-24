@@ -35,3 +35,26 @@ clean:
 	rm -rf .pytest_cache .ruff_cache .mypy_cache build dist *.egg-info src/*.egg-info reports
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 	find . -name "*.pyc" -delete 2>/dev/null || true
+
+.PHONY: mythos
+
+mythos:
+	$(PYTHON) -m peachfuzz_ai.cli run --target json --runs 500 corpus/json_api || true
+	$(PYTHON) -m peachfuzz_ai.cli run --target findings --runs 500 corpus/text_findings || true
+	$(PYTHON) -m peachfuzz_ai.cli refine --report-dir reports --output MYTHOS_GLASSWING_PLAN.md
+
+.PHONY: editions cactus
+
+editions:
+	$(PYTHON) -m peachfuzz_ai.cli editions
+
+cactus:
+	$(PYTHON) -m cactusfuzz.cli --target local-lab --scope local-lab
+
+.PHONY: radar roadmap
+
+radar:
+	$(PYTHON) -m peachfuzz_ai.cli radar
+
+roadmap:
+	$(PYTHON) -m peachfuzz_ai.cli roadmap

@@ -1,0 +1,44 @@
+name: Mythos Glasswing Self-Refinement
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 5 * * 1"
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PeachFuzz
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Run local fuzz smoke
+        run: |
+          python -m peachfuzz_ai.cli run --target json --runs 500 corpus/json_api || true
+          python -m peachfuzz_ai.cli run --target findings --runs 500 corpus/text_findings || true
+
+      - name: Generate Mythos Glasswing proposal
+        run: |
+          python -m peachfuzz_ai.cli refine --report-dir reports --output MYTHOS_GLASSWING_PLAN.md
+
+      - name: Upload proposal artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mythos-glasswing-proposal
+          path: |
+            MYTHOS_GLASSWING_PLAN.md
+            MYTHOS_GLASSWING_PLAN.json
+            reports/
