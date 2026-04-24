@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="CyberViser / 0AI AI-assisted fuzzing stack: PeachFuzz (defensive), CactusFuzz (authorized lab adversarial), PeachTree (traceable dataset engine)." />
+  <title>CyberViser AI Fuzzing | PeachFuzz • CactusFuzz • PeachTree</title>
+  <style>
+    :root{--bg:#070a12;--panel:rgba(255,255,255,.06);--line:rgba(255,255,255,.14);--txt:#f5f7ff;--mut:#b8c0d6;--peach:#ffb07c;--cactus:#75e0a7;--cyan:#7ad7ff;--shadow:0 24px 70px rgba(0,0,0,.40)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;line-height:1.6;color:var(--txt);
+      background:radial-gradient(circle at 18% 12%, rgba(255,176,124,.22), transparent 32%),
+                 radial-gradient(circle at 82% 8%, rgba(117,224,167,.18), transparent 30%),
+                 radial-gradient(circle at 50% 92%, rgba(122,215,255,.14), transparent 38%),
+                 var(--bg);
+    }
+    a{color:inherit}
+    .wrap{width:min(1120px, calc(100% - 44px)); margin:0 auto}
+    header{position:sticky;top:0;z-index:20;backdrop-filter:blur(16px);background:rgba(7,10,18,.72);border-bottom:1px solid var(--line)}
+    nav{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:-.03em}
+    .logo{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--peach),var(--cactus));box-shadow:0 12px 40px rgba(255,176,124,.18)}
+    .navlinks{display:flex;gap:16px;font-size:14px;color:var(--mut);flex-wrap:wrap;justify-content:flex-end}
+    .navlinks a{text-decoration:none;padding:8px 10px;border-radius:10px}
+    .navlinks a:hover{background:rgba(255,255,255,.06);color:var(--txt)}
+
+    .hero{padding:86px 0 54px}
+    .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center}
+    .pill{display:inline-flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.05);color:var(--mut);font-size:13px}
+    h1{margin:22px 0 14px;font-size:clamp(40px, 7.5vw, 78px);line-height:.95;letter-spacing:-.075em}
+    h1 span{background:linear-gradient(105deg,var(--peach),#ffe7d2 45%,var(--cactus));-webkit-background-clip:text;color:transparent}
+    .lead{color:#d2d8ea;font-size:clamp(17px,2vw,21px);max-width:52ch}
+    .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+    .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border-radius:14px;border:1px solid var(--line);background:var(--panel);text-decoration:none;font-weight:800}
+    .btn.primary{border:0;color:#0e111a;background:linear-gradient(135deg,var(--peach),var(--cactus))}
+    .btn:hover{transform:translateY(-1px)}
+
+    .card{border:1px solid var(--line);background:var(--panel);border-radius:26px;box-shadow:var(--shadow)}
+    .term{padding:20px 20px 18px}
+    .dots{display:flex;gap:7px;margin-bottom:14px}
+    .dots i{width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.16)}
+    pre{margin:0;white-space:pre-wrap;font-size:13px;color:#e0e7ff}
+
+    section{padding:54px 0}
+    h2{margin:0 0 12px;font-size:clamp(28px,4vw,46px);letter-spacing:-.055em;line-height:1.05}
+    .section-lead{margin:0 0 24px;color:var(--mut);max-width:80ch}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .feature{padding:22px;min-height:240px}
+    .feature h3{margin:10px 0 8px;font-size:20px;letter-spacing:-.02em}
+    .feature p,.feature li{color:var(--mut)}
+    .tag{display:inline-flex;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);font-size:12px;color:var(--mut)}
+
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .small{font-size:14px}
+    footer{padding:34px 0 54px;color:var(--mut);border-top:1px solid var(--line);background:rgba(0,0,0,.18)}
+
+    @media (max-width: 920px){.grid{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.two{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <nav>
+        <div class="brand">
+          <div class="logo">🍑</div>
+          <div>CyberViser AI Fuzzing</div>
+        </div>
+        <div class="navlinks">
+          <a href="#stack">Stack</a>
+          <a href="#workflow">Workflow</a>
+          <a href="#safety">Safety</a>
+          <a href="#get">Get Started</a>
+          <a href="https://github.com/0ai-Cyberviser/peachfuzz" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div class="wrap">
+        <div class="grid">
+          <div>
+            <div class="pill">AI-assisted fuzzing • local-only by default • CI-safe</div>
+            <h1><span>PeachFuzz</span> for defense.<br/><span>CactusFuzz</span> for authorized labs.<br/><span>PeachTree</span> for datasets.</h1>
+            <p class="lead">A cohesive, safety-first fuzzing ecosystem for parsers, APIs, and agent guardrails—plus a traceable dataset engine to train and evaluate future cybersecurity copilots.</p>
+            <div class="actions">
+              <a class="btn primary" href="https://github.com/0ai-Cyberviser/peachfuzz" target="_blank" rel="noopener">🍑 PeachFuzz repo</a>
+              <a class="btn" href="https://github.com/0ai-Cyberviser/PeachTree" target="_blank" rel="noopener">🌳 PeachTree repo</a>
+              <a class="btn" href="#get">▶ Quick start</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="term">
+              <div class="dots"><i></i><i></i><i></i></div>
+              <pre><code>$ pip install -e ".[dev,fuzz]"
+$ python -m peachfuzz_ai.cli run --target json --runs 250
+
+# PeachTrace coverage-style backend (no native deps)
+$ peachfuzz run --target graphql --backend peachtrace --runs 500
+
+# Crash minimization + pytest reproducers
+$ peachfuzz minimize --target graphql reports/crashes/example.bin
+$ peachfuzz reproduce --target graphql reports/minimized/example.bin --output tests/regression</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section id="stack">
+      <div class="wrap">
+        <h2>The stack</h2>
+        <p class="section-lead">Three components that reinforce each other: fuzz locally, triage deterministically, and generate provenance-rich datasets for training and evaluation.</p>
+        <div class="cards">
+          <div class="card feature">
+            <div class="tag">🍑 Defensive</div>
+            <h3>PeachFuzz</h3>
+            <p>Agentic fuzzing harness for parser + API safety testing. Works in CI, prioritizes reproducibility, and avoids offensive network activity.</p>
+            <ul>
+              <li>Deterministic backend + PeachTrace</li>
+              <li>Schema-aware mutators (JSON/OpenAPI/GraphQL/webhooks)</li>
+              <li>Crash minimization + pytest reproducers</li>
+            </ul>
+          </div>
+          <div class="card feature">
+            <div class="tag">🌵 Authorized</div>
+            <h3>CactusFuzz</h3>
+            <p>Scope-gated, simulation-first adversarial edition for owned/lab systems and AI-agent safety testing—proposal-only by default.</p>
+            <ul>
+              <li>Guardrail packs: injection, approval bypass, exfil simulation</li>
+              <li>Strict scope + local-lab targeting</li>
+              <li>No unauthorized scanning or exploit delivery by default</li>
+            </ul>
+          </div>
+          <div class="card feature">
+            <div class="tag">🌳 Datasets</div>
+            <h3>PeachTree</h3>
+            <p>Recursive learning-tree dataset engine. Converts repos, docs, tests, fuzz reports, and plans into safe, deduplicated JSONL with provenance.</p>
+            <ul>
+              <li>Safety + license gates</li>
+              <li>Manifests + lineage maps</li>
+              <li>Review-first owned GitHub inventory</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="workflow">
+      <div class="wrap">
+        <h2>Typical workflow</h2>
+        <p class="section-lead">Start in defensive mode, generate reviewable artifacts, then feed the learnings into PeachTree for structured datasets.</p>
+        <div class="two">
+          <div class="card feature small">
+            <h3>1) Fuzz locally</h3>
+            <p>Run deterministic fuzzing in CI, or PeachTrace locally for coverage-style exploration without native dependencies.</p>
+            <pre><code>peachfuzz run --target json --backend deterministic --runs 1000
+peachfuzz run --target openapi --backend peachtrace --runs 500</code></pre>
+          </div>
+          <div class="card feature small">
+            <h3>2) Triage + minimize</h3>
+            <p>Turn crashes into minimized payloads and stable regression tests. Keep everything local and auditable.</p>
+            <pre><code>peachfuzz minimize --target graphql reports/crashes/crash.bin
+peachfuzz reproduce --target graphql reports/minimized/crash.bin --output tests/regression</code></pre>
+          </div>
+          <div class="card feature small">
+            <h3>3) Propose refinements</h3>
+            <p>Use proposal-only self-refinement plans to suggest fixes and tests—humans review before merging.</p>
+            <pre><code>python -m peachfuzz_ai.cli refine --report-dir reports --output MYTHOS_GLASSWING_PLAN.md</code></pre>
+          </div>
+          <div class="card feature small">
+            <h3>4) Build datasets</h3>
+            <p>Ingest fuzz reports + repos into PeachTree JSONL with provenance and policy gates for training/eval.</p>
+            <pre><code>peachtree ingest-local --repo ~/peachfuzz --repo-name peachfuzz --output data/raw/peachfuzz.jsonl
+peachtree build --source data/raw/peachfuzz.jsonl --dataset data/datasets/peachfuzz-instruct.jsonl</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="safety">
+      <div class="wrap">
+        <h2>Safety posture</h2>
+        <p class="section-lead">Designed to be useful in production pipelines without becoming an offensive automation engine.</p>
+        <div class="cards">
+          <div class="card feature">
+            <h3>Local-only targets</h3>
+            <p>Fuzzing is constrained to registered local parsers/harnesses. No third-party contact is required.</p>
+          </div>
+          <div class="card feature">
+            <h3>Scope gates</h3>
+            <p>CactusFuzz is opt-in, scope-gated, and simulation-first. Defaults are intentionally conservative.</p>
+          </div>
+          <div class="card feature">
+            <h3>Review-first artifacts</h3>
+            <p>Plans, diffs, reproducers, and dataset manifests are meant to be reviewed by humans before merge/train.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="get">
+      <div class="wrap">
+        <h2>Get started</h2>
+        <p class="section-lead">Clone, install, run a few targets, then wire PeachTree to generate datasets and lineage maps.</p>
+        <div class="card feature small">
+          <pre><code>git clone https://github.com/0ai-Cyberviser/peachfuzz
+cd peachfuzz
+python -m venv .venv && source .venv/bin/activate
+python -m pip install -e ".[dev,fuzz]"
+pytest -q
+
+# fuzz
+python -m peachfuzz_ai.cli run --target json --runs 250
+
+# datasets
+git clone https://github.com/0ai-Cyberviser/PeachTree
+# (see PeachTree README for peachtree ingest-local/build/audit)</code></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between">
+        <div>© <span id="y"></span> CyberViser / 0AI • PeachFuzz • CactusFuzz • PeachTree</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a href="https://github.com/0ai-Cyberviser/peachfuzz" target="_blank" rel="noopener">peachfuzz</a>
+          <a href="https://github.com/0ai-Cyberviser/PeachTree" target="_blank" rel="noopener">PeachTree</a>
+          <a href="https://cyberviserai.com">cyberviserai.com</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('y').textContent = String(new Date().getFullYear());
+  </script>
+</body>
+</html>
