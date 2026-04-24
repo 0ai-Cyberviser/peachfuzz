@@ -8,6 +8,3 @@ build/
 dist/
 *.egg-info/
 reports/
-
-MYTHOS_GLASSWING_PLAN.md
-MYTHOS_GLASSWING_PLAN.json

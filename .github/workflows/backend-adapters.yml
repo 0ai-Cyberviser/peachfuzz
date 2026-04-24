@@ -1,0 +1,32 @@
+name: Backend Adapter CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/peachfuzz_ai/backends.py"
+      - "src/peachfuzz_ai/cli.py"
+      - "tests/test_backends.py"
+      - "docs/BACKEND_ADAPTERS.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backend-adapters:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+      - run: pytest -q tests/test_backends.py
+      - run: peachfuzz backends --include-unsafe
+      - run: peachfuzz run --target json --backend deterministic --runs 25 corpus/json_api

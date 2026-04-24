@@ -117,3 +117,16 @@ peachfuzz roadmap --format json
 ```
 
 Use this to guide feature priority without adding unsafe scraping behavior to CI.
+
+
+## Backend adapters
+
+PeachFuzz/CactusFuzz v0.4.1 adds a fuzz backend adapter layer.
+
+```bash
+peachfuzz backends
+peachfuzz backends --include-unsafe
+peachfuzz run --target json --backend deterministic --runs 250 corpus/json_api
+```
+
+The default `deterministic` backend remains local-only and CI-safe. `atheris` is optional for Python coverage-guided sessions. `external-sandbox` is a disabled placeholder for future AFL++/LibAFL/native integrations and cannot run until sandbox, authorization, and audit controls exist.

@@ -58,3 +58,8 @@ radar:
 
 roadmap:
 	$(PYTHON) -m peachfuzz_ai.cli roadmap
+
+.PHONY: backends
+
+backends:
+	$(PYTHON) -m peachfuzz_ai.cli backends --include-unsafe

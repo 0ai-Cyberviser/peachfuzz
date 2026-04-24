@@ -5,9 +5,10 @@ import argparse
 import sys
 from pathlib import Path
 
-from .engine import PeachFuzzEngine, load_corpus
+from .engine import load_corpus
 from .guardrails import validate_target_name
 from .targets import get_target, target_names
+from .backends import BackendRunRequest, backend_matrix_json, backend_matrix_markdown, backend_names, get_backend
 from .radar import to_json as radar_json, to_markdown as radar_markdown, strategic_thesis
 from .roadmap import to_json as roadmap_json, to_markdown as roadmap_markdown
 from .editions import edition_matrix_markdown
@@ -17,10 +18,21 @@ from .self_refine import SelfRefinementEngine
 def run_deterministic(args: argparse.Namespace) -> int:
     target_name = validate_target_name(args.target)
     corpus = load_corpus(args.corpus) if args.corpus else [b"{}", b'{"endpoint":"/v1/ask"}']
-    engine = PeachFuzzEngine(get_target(target_name), target_name, report_dir=args.report_dir, seed=args.seed)
-    result = engine.run(corpus, runs=args.runs)
-    print(result.to_json())
-    return 1 if result.crashes and args.fail_on_crash else 0
+    backend = get_backend(args.backend)
+    request = BackendRunRequest(
+        target_name=target_name,
+        target=get_target(target_name),
+        corpus=corpus,
+        runs=args.runs,
+        report_dir=args.report_dir,
+        seed=args.seed,
+    )
+    outcome = backend.run(request)
+    if outcome.result is not None:
+        print(outcome.result.to_json())
+    else:
+        print(outcome.to_dict())
+    return 1 if args.fail_on_crash and not outcome.ok else 0
 
 
 def run_atheris(args: argparse.Namespace) -> int:
@@ -49,6 +61,16 @@ def run_refine(args: argparse.Namespace) -> int:
 
 def run_editions(args: argparse.Namespace) -> int:
     print(edition_matrix_markdown())
+    return 0
+
+
+def run_backends(args: argparse.Namespace) -> int:
+    if args.format == "json":
+        import json
+        print(json.dumps(backend_matrix_json(include_unsafe=args.include_unsafe), indent=2, sort_keys=True))
+    else:
+        print("# PeachFuzz/CactusFuzz Backend Matrix\n")
+        print(backend_matrix_markdown(include_unsafe=args.include_unsafe))
     return 0
 
 
@@ -81,6 +103,7 @@ def make_parser() -> argparse.ArgumentParser:
     run.add_argument("--runs", type=int, default=1000)
     run.add_argument("--seed", type=int, default=1337)
     run.add_argument("--report-dir", default="reports")
+    run.add_argument("--backend", choices=backend_names(), default="deterministic")
     run.add_argument("--fail-on-crash", action="store_true")
     run.add_argument("corpus", nargs="*", help="corpus files or directories")
     run.set_defaults(func=run_deterministic)
@@ -98,6 +121,11 @@ def make_parser() -> argparse.ArgumentParser:
 
     editions = sub.add_parser("editions", help="show PeachFuzz/CactusFuzz edition split")
     editions.set_defaults(func=run_editions)
+
+    backends = sub.add_parser("backends", help="show fuzz backend safety matrix")
+    backends.add_argument("--format", choices=["markdown", "json"], default="markdown")
+    backends.add_argument("--include-unsafe", action="store_true", help="include disabled/sandbox-required backend stubs")
+    backends.set_defaults(func=run_backends)
 
     radar = sub.add_parser("radar", help="show competitive radar")
     radar.add_argument("--format", choices=["markdown", "json"], default="markdown")
