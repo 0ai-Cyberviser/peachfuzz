@@ -1,0 +1,44 @@
+name: PeachFuzz CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-fuzz:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Unit tests
+        run: pytest -q
+
+      - name: Deterministic fuzz smoke
+        run: |
+          python -m peachfuzz_ai.cli run --target json --runs 250 corpus/json_api
+          python -m peachfuzz_ai.cli run --target findings --runs 250 corpus/text_findings
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: peachfuzz-reports
+          path: reports/
