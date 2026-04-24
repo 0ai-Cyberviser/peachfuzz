@@ -130,3 +130,15 @@ peachfuzz run --target json --backend deterministic --runs 250 corpus/json_api
 ```
 
 The default `deterministic` backend remains local-only and CI-safe. `atheris` is optional for Python coverage-guided sessions. `external-sandbox` is a disabled placeholder for future AFL++/LibAFL/native integrations and cannot run until sandbox, authorization, and audit controls exist.
+
+
+## Agent guardrail fuzzing pack
+
+CactusFuzz v0.4.2 adds a simulation-only AI-agent guardrail pack.
+
+```bash
+cactusfuzz --target local-lab --scope local-lab --pack agent-guardrails
+cactusfuzz --target local-lab --scope local-lab --pack agent-guardrails --format markdown
+```
+
+The pack checks prompt-injection, unsafe tool routing, approval bypass, exfiltration, persistence, and benign local schema-fuzz controls without executing tools or contacting networks.

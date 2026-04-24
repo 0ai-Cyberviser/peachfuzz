@@ -63,3 +63,8 @@ roadmap:
 
 backends:
 	$(PYTHON) -m peachfuzz_ai.cli backends --include-unsafe
+
+.PHONY: guardrails
+
+guardrails:
+	$(PYTHON) -m cactusfuzz.cli --target local-lab --scope local-lab --pack agent-guardrails --format markdown
