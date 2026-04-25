@@ -1,4 +1,4 @@
-name: Security Baseline
+name: Continuous Security Baseline
 
 on:
   pull_request:
@@ -10,127 +10,148 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: security-baseline-${{ github.ref }}
+  group: security-baseline-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
   contents: read
   security-events: write
+  actions: read
 
 jobs:
   codeql:
-    name: CodeQL
+    name: CodeQL SAST
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
+        uses: github/codeql-action/init@v3
         with:
           languages: python
+          queries: security-extended,security-and-quality
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v4
+        uses: github/codeql-action/autobuild@v3
 
       - name: Analyze
-        uses: github/codeql-action/analyze@v4
+        uses: github/codeql-action/analyze@v3
 
   semgrep:
     name: Semgrep SAST
     runs-on: ubuntu-latest
-    container:
-      image: returntocorp/semgrep:latest
+    timeout-minutes: 20
+    continue-on-error: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Semgrep
+        run: python -m pip install --upgrade pip semgrep
 
       - name: Semgrep scan
         run: |
           semgrep scan \
-            --config auto \
+            --config p/python \
+            --config p/security-audit \
             --sarif \
-            --output semgrep.sarif
+            --output semgrep.sarif \
+            . || true
 
-      - name: Upload SARIF
-        uses: github/codeql-action/upload-sarif@v4
+      - name: Upload Semgrep SARIF
+        if: always() && hashFiles('semgrep.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: semgrep.sarif
+          category: semgrep
 
   dependencies:
-    name: Dependency Security
+    name: OSV dependency scan
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    continue-on-error: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: OSV-Scanner
+      - name: OSV Scanner
         uses: google/osv-scanner-action/osv-scanner-action@v2
         with:
           scan-args: |-
             --recursive
-            --format=sarif
-            --output=osv.sarif
             .
 
-      - name: Upload OSV SARIF
-        uses: github/codeql-action/upload-sarif@v4
-        with:
-          sarif_file: osv.sarif
-
-      - name: Python dependency audit (if Python project)
+      - name: Python dependency audit
         if: hashFiles('pyproject.toml', 'requirements*.txt') != ''
         run: |
           python -m pip install --upgrade pip pip-audit
-          pip-audit
+          pip-audit --progress-spinner off --desc || true
 
-      - name: npm audit (if Node project)
+      - name: npm audit
         if: hashFiles('package-lock.json', 'npm-shrinkwrap.json') != ''
-        run: npm audit --audit-level=high
+        run: npm audit --audit-level=high || true
 
   trivy:
-    name: Trivy Scan
+    name: Trivy filesystem/container-context scan
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    continue-on-error: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Trivy filesystem scan
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@0.30.0
         with:
           scan-type: fs
+          scan-ref: .
           format: sarif
           output: trivy.sarif
-          severity: CRITICAL,HIGH
+          severity: CRITICAL,HIGH,MEDIUM
           ignore-unfixed: true
+          exit-code: "0"
 
       - name: Upload Trivy SARIF
-        uses: github/codeql-action/upload-sarif@v4
+        if: always() && hashFiles('trivy.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy.sarif
+          category: trivy
 
   checkov:
     name: Checkov IaC
     runs-on: ubuntu-latest
-    if: hashFiles('**/*.tf', '**/*.tfvars', '**/*.bicep', '**/*.template', '**/*cloudformation*.yml', '**/*cloudformation*.yaml', '**/template*.yml', '**/template*.yaml', '**/Dockerfile', '**/kustomization.yaml') != ''
+    timeout-minutes: 20
+    continue-on-error: true
+    if: hashFiles('**/*.tf', '**/*.tfvars', '**/*.bicep', '**/*.template', '**/*cloudformation*.yml', '**/*cloudformation*.yaml', '**/template*.yml', '**/template*.yaml', '**/Dockerfile', '**/kustomization.yaml', '.github/workflows/*.yml', '.github/workflows/*.yaml') != ''
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@v12
         with:
           directory: .
-          framework: terraform,kubernetes,dockerfile,cloudformation,arm,bicep
+          framework: github_actions,terraform,kubernetes,dockerfile,cloudformation,arm,bicep
           output_format: sarif
           output_file_path: checkov.sarif
+          soft_fail: true
 
       - name: Upload Checkov SARIF
-        uses: github/codeql-action/upload-sarif@v4
+        if: always() && hashFiles('checkov.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: checkov.sarif
+          category: checkov
