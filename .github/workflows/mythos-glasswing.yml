@@ -35,7 +35,7 @@ jobs:
           python -m peachfuzz_ai.cli refine --report-dir reports --output MYTHOS_GLASSWING_PLAN.md
 
       - name: Upload proposal artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: mythos-glasswing-proposal
           path: |
