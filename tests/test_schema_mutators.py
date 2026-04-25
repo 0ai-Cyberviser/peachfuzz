@@ -62,6 +62,11 @@ def test_new_targets_registered():
         assert validate_target_name(name) == name
 
 
+def test_validate_target_name_matches_registered_targets():
+    for name in target_names():
+        assert validate_target_name(name) == name
+
+
 def test_structured_targets_accept_generated_seeds():
     mutator = SchemaAwareMutator(seed=3)
     for kind, target_name in [
