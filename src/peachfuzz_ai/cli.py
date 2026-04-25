@@ -1,6 +1,6 @@
+from __future__ import annotations
 from .peachtree_import import PeachTreeSeedImporter
 """Command line interface for PeachFuzz AI."""
-from __future__ import annotations
 
 import argparse
 import sys
