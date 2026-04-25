@@ -9,7 +9,6 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict
 from enum import Enum
 import json
-import re
 from typing import Any
 
 from .scope import AuthorizationScope

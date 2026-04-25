@@ -5,9 +5,8 @@ from collections.abc import Callable, Iterable
 from pathlib import Path
 import json
 import random
-from typing import BinaryIO
 
-from .models import AgentState, FuzzFinding, FuzzRunResult, Severity, payload_digest, preview_payload
+from .models import FuzzFinding, FuzzRunResult, Severity, payload_digest, preview_payload
 
 
 class PeachFuzzEngine:
