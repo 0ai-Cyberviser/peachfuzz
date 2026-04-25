@@ -31,7 +31,7 @@ def deep_nest(depth=10):
 def mutate_json(payload: str) -> str:
     try:
         data = json.loads(payload)
-    except:
+    except json.JSONDecodeError:
         data = {"endpoint": payload[:32] or "/v1/workflows"}
 
     roll = random.random()

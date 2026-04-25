@@ -188,7 +188,7 @@ class SchemaAwareMutator:
         variants: list[SchemaSeed] = []
         for idx in range(max(0, count)):
             if seed.kind == SchemaKind.JSON_API:
-                payload = self._mutate_json_api(dict(seed.payload))
+                payload: Any = self._mutate_json_api(dict(seed.payload))
             elif seed.kind == SchemaKind.OPENAPI:
                 payload = self._mutate_openapi(json.loads(json.dumps(seed.payload)))
             elif seed.kind == SchemaKind.GRAPHQL:
