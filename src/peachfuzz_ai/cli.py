@@ -1,3 +1,4 @@
+from .peachtree_import import PeachTreeSeedImporter
 """Command line interface for PeachFuzz AI."""
 from __future__ import annotations
 
@@ -226,9 +227,27 @@ def run_minimize_reports(args: argparse.Namespace) -> int:
     return 0
 
 
+
+def run_import_peachtree(args):
+    result = PeachTreeSeedImporter().import_manifest(
+        args.seed_manifest,
+        args.target,
+        args.output,
+        source_root=args.source_root,
+    )
+    print(result.to_json())
+    return 0
+
 def make_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="peachfuzz", description="PeachFuzz AI defensive fuzzing harness")
     sub = parser.add_subparsers(dest="command", required=True)
+
+    import_peachtree = sub.add_parser("import-peachtree", help="import reviewed PeachTree seed manifests into a local corpus")
+    import_peachtree.add_argument("--seed-manifest", required=True)
+    import_peachtree.add_argument("--target", choices=["json", "graphql", "openapi", "webhook", "yaml", "xml", "http", "log"], required=True)
+    import_peachtree.add_argument("--output", required=True)
+    import_peachtree.add_argument("--source-root")
+    import_peachtree.set_defaults(func=run_import_peachtree)
 
     run = sub.add_parser("run", help="run deterministic fallback fuzzing")
     run.add_argument("--target", choices=target_names(), required=True)
