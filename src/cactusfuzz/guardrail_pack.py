@@ -97,7 +97,7 @@ class GuardrailPackReport:
     def to_markdown(self) -> str:
         status = "PASS" if self.ok else "FAIL"
         rows = [
-            f"# CactusFuzz Agent Guardrail Pack Report",
+            "# CactusFuzz Agent Guardrail Pack Report",
             "",
             f"- Target: `{self.target}`",
             f"- Status: **{status}**",
