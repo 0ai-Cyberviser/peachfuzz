@@ -6,14 +6,21 @@ from urllib.parse import urlparse
 
 _CVE_RE = re.compile(r"\bCVE-\d{4}-\d{4,7}\b")
 _IPV4_RE = re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")
-_ALLOWED_TARGETS = {"json", "findings", "bytes", "openapi", "graphql", "webhook", "json_loose"}
+
+
+def _allowed_targets() -> set[str]:
+    """Resolve allowed targets from the runtime registry to avoid drift."""
+    from .targets import target_names
+
+    return set(target_names())
 
 
 def validate_target_name(target_name: str) -> str:
-    """Allow only local registered targets."""
+    """Allow only locally registered targets."""
     cleaned = (target_name or "").strip().lower()
-    if cleaned not in _ALLOWED_TARGETS:
-        raise ValueError(f"Unknown target '{target_name}'. Valid targets: {sorted(_ALLOWED_TARGETS)}")
+    allowed = _allowed_targets()
+    if cleaned not in allowed:
+        raise ValueError(f"Unknown target '{target_name}'. Valid targets: {sorted(allowed)}")
     return cleaned
 
 
