@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 
 _CVE_RE = re.compile(r"\bCVE-\d{4}-\d{4,7}\b")
 _IPV4_RE = re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")
-_ALLOWED_TARGETS = {"json", "findings", "bytes", "openapi", "graphql", "webhook"}
+_ALLOWED_TARGETS = {"json", "findings", "bytes", "openapi", "graphql", "webhook", "json_loose"}
 
 
 def validate_target_name(target_name: str) -> str:
