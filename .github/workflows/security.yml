@@ -9,6 +9,10 @@ on:
     - cron: "17 3 * * 1"
   workflow_dispatch:
 
+concurrency:
+  group: security-baseline-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   security-events: write
@@ -113,7 +117,7 @@ jobs:
   checkov:
     name: Checkov IaC
     runs-on: ubuntu-latest
-    if: hashFiles('**/*.tf', '**/Dockerfile', '**/*.yml', '**/*.yaml', '**/kustomization.yaml', '**/*.template') != ''
+    if: hashFiles('**/*.tf', '**/*.tfvars', '**/*.bicep', '**/*.template', '**/Dockerfile', '**/kustomization.yaml') != ''
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -122,7 +126,7 @@ jobs:
         uses: bridgecrewio/checkov-action@v12
         with:
           directory: .
-          framework: all
+          framework: terraform,kubernetes,dockerfile,cloudformation,arm,bicep
           output_format: sarif
           output_file_path: checkov.sarif
 
