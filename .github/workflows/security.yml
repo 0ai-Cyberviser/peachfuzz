@@ -117,7 +117,7 @@ jobs:
   checkov:
     name: Checkov IaC
     runs-on: ubuntu-latest
-    if: hashFiles('**/*.tf', '**/*.tfvars', '**/*.bicep', '**/*.template', '**/Dockerfile', '**/kustomization.yaml') != ''
+    if: hashFiles('**/*.tf', '**/*.tfvars', '**/*.bicep', '**/*.template', '**/*cloudformation*.yml', '**/*cloudformation*.yaml', '**/template*.yml', '**/template*.yaml', '**/Dockerfile', '**/kustomization.yaml') != ''
     steps:
       - name: Checkout
         uses: actions/checkout@v4
