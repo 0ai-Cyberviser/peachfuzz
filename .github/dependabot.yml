@@ -1,0 +1,34 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "security"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:30"
+    groups:
+      github-actions-major:
+        patterns:
+          - "actions/*"
+          - "github/codeql-action"
+        update-types:
+          - "major"
+    open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: "peter-evans/create-pull-request"
+        update-types:
+          - "version-update:semver-major"
+    labels:
+      - "dependencies"
+      - "security"
