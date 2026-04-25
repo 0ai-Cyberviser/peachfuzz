@@ -22,13 +22,10 @@ updates:
         patterns:
           - "actions/*"
           - "github/codeql-action"
+          - "peter-evans/create-pull-request"
         update-types:
           - "major"
     open-pull-requests-limit: 10
-    ignore:
-      - dependency-name: "peter-evans/create-pull-request"
-        update-types:
-          - "version-update:semver-major"
     labels:
       - "dependencies"
       - "security"
