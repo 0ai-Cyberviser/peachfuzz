@@ -5,9 +5,10 @@ REPORTS = Path("reports")
 OUT = REPORTS / "summary.json"
 
 def load_json(p):
+    """Load JSON from a file path, returning empty dict on failure."""
     try:
-        return json.loads(p.read_text())
-    except:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, FileNotFoundError, PermissionError, OSError):
         return {}
 
 def main():

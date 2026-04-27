@@ -10,9 +10,14 @@ from .scope import AuthorizationScope
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="cactusfuzz", description="Authorized adversarial fuzzing edition")
+    parser = argparse.ArgumentParser(
+        prog="cactusfuzz", description="Authorized adversarial fuzzing edition"
+    )
     parser.add_argument("--target", default="local-lab", help="owned/lab target identifier")
-    parser.add_argument("--scope", action="append", default=["local-lab"], help="authorized target/scope; repeatable")
+    parser.add_argument(
+        "--scope", action="append", default=["local-lab"],
+        help="authorized target/scope; repeatable"
+    )
     parser.add_argument("--operator", default="local-operator")
     parser.add_argument("--pack", choices=["default", "agent-guardrails"], default="default")
     parser.add_argument("--format", choices=["json", "markdown"], default="json")

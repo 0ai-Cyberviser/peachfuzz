@@ -276,3 +276,12 @@ class PeachTraceEngine:
     def _word(self, length: int = 8) -> str:
         alphabet = "abcdefghijklmnopqrstuvwxyz"
         return "".join(self.random.choice(alphabet) for _ in range(length))
+
+
+__all__ = [
+    "PeachTraceEngine",
+    "PeachTraceResult",
+    "PeachTraceStats",
+    "TracePoint",
+    "TraceRun",
+]

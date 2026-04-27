@@ -6,6 +6,22 @@ from typing import Any
 
 
 def json_loose_target(data: bytes) -> None:
+    """Target that exercises more JSON edge cases for fuzz exploration.
+
+    This target validates JSON API payloads with strict endpoint and body
+    validation to catch common security issues like path traversal and
+    external URL injection.
+
+    Args:
+        data: Raw bytes that should contain valid JSON.
+
+    Raises:
+        TypeError: If top-level is not object, endpoint has wrong type, or body key is invalid.
+        KeyError: If endpoint key is missing.
+        OverflowError: If endpoint is numeric.
+        ValueError: If endpoint contains unsafe patterns.
+        PermissionError: If endpoint references external URLs.
+    """
     obj: Any = json.loads(data)
 
     if not isinstance(obj, dict):
@@ -47,3 +63,6 @@ def json_loose_target(data: bytes) -> None:
             if not isinstance(k, str):
                 raise TypeError("body key invalid")
             str(v)
+
+
+__all__ = ["json_loose_target"]

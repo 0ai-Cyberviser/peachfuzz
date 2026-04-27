@@ -187,6 +187,7 @@ class SchemaAwareMutator:
         """Generate deterministic structured variants from one seed."""
         variants: list[SchemaSeed] = []
         for idx in range(max(0, count)):
+            payload: Any
             if seed.kind == SchemaKind.JSON_API:
                 payload = self._mutate_json_api(dict(seed.payload))
             elif seed.kind == SchemaKind.OPENAPI:
@@ -327,6 +328,17 @@ def kind_names() -> list[str]:
 
 
 def parse_kinds(raw: Iterable[str] | None) -> list[SchemaKind]:
+    """Parse schema kind strings into SchemaKind enums."""
     if not raw or "all" in raw:
         return list(SchemaKind)
     return [SchemaKind(item) for item in raw]
+
+
+__all__ = [
+    "CorpusWriteResult",
+    "SchemaAwareMutator",
+    "SchemaKind",
+    "SchemaSeed",
+    "kind_names",
+    "parse_kinds",
+]

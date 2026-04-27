@@ -5,9 +5,8 @@ from collections.abc import Callable, Iterable
 from pathlib import Path
 import json
 import random
-from typing import BinaryIO
 
-from .models import AgentState, FuzzFinding, FuzzRunResult, Severity, payload_digest, preview_payload
+from .models import FuzzFinding, FuzzRunResult, Severity, payload_digest, preview_payload
 
 
 class PeachFuzzEngine:
@@ -105,14 +104,43 @@ class PeachFuzzEngine:
 
 
 def load_corpus(paths: list[str | Path]) -> list[bytes]:
-    """Load corpus files from paths/directories."""
+    """Load corpus files from paths/directories.
+
+    Robust loading that handles permission errors, missing files, and empty files.
+    Skips files that cannot be read without failing the entire load.
+    """
     corpus: list[bytes] = []
     for raw in paths:
-        path = Path(raw)
-        if path.is_dir():
-            for child in sorted(path.iterdir()):
-                if child.is_file():
-                    corpus.append(child.read_bytes())
-        elif path.is_file():
-            corpus.append(path.read_bytes())
+        try:
+            path = Path(raw)
+            if path.is_dir():
+                try:
+                    children = sorted(path.iterdir())
+                except PermissionError:
+                    continue
+                for child in children:
+                    if child.is_file():
+                        try:
+                            data = child.read_bytes()
+                            if data:  # Skip empty files
+                                corpus.append(data)
+                        except (OSError, PermissionError):
+                            continue
+            elif path.is_file():
+                try:
+                    data = path.read_bytes()
+                    if data:
+                        corpus.append(data)
+                except (OSError, PermissionError):
+                    continue
+        except OSError:
+            continue
     return corpus
+
+
+__all__ = [
+    "FuzzFinding",
+    "FuzzRunResult",
+    "PeachFuzzEngine",
+    "load_corpus",
+]

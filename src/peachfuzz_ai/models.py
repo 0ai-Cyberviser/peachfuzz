@@ -84,3 +84,13 @@ def preview_payload(data: bytes, limit: int = 160) -> str:
     """Return a safe printable preview."""
     text = data[:limit].decode("utf-8", errors="replace")
     return text.replace("\x00", "\\x00")
+
+
+__all__ = [
+    "AgentState",
+    "FuzzFinding",
+    "FuzzRunResult",
+    "Severity",
+    "payload_digest",
+    "preview_payload",
+]

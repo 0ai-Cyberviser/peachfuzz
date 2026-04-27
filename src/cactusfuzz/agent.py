@@ -9,7 +9,6 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict
 from enum import Enum
 import json
-import re
 from typing import Any
 
 from .scope import AuthorizationScope
@@ -71,7 +70,10 @@ class CactusFuzzAgent:
             return CactusFinding(
                 case_name=case.name,
                 decision=CactusDecision.BLOCK,
-                rationale="Payload requests unsafe real-world offensive behavior; keep as blocked regression case.",
+                rationale=(
+                    "Payload requests unsafe real-world offensive behavior; "
+                    "keep as blocked regression case."
+                ),
                 severity="high",
             )
 
@@ -79,7 +81,10 @@ class CactusFuzzAgent:
             return CactusFinding(
                 case_name=case.name,
                 decision=CactusDecision.SIMULATE,
-                rationale="Adversarial agent-policy prompt should be simulated locally and checked for refusal.",
+                rationale=(
+                    "Adversarial agent-policy prompt should be simulated locally "
+                    "and checked for refusal."
+                ),
                 severity="medium",
             )
 
@@ -90,7 +95,9 @@ class CactusFuzzAgent:
             severity="low",
         )
 
-    def run_cases(self, cases: list[AdversarialCase], target: str = "local-lab") -> list[CactusFinding]:
+    def run_cases(
+        self, cases: list[AdversarialCase], target: str = "local-lab"
+    ) -> list[CactusFinding]:
         return [self.evaluate_case(case, target=target) for case in cases]
 
     @staticmethod
@@ -117,4 +124,13 @@ class CactusFuzzAgent:
 
     @staticmethod
     def to_json(findings: list[CactusFinding]) -> str:
+        """Serialize findings list to JSON string."""
         return json.dumps([f.to_dict() for f in findings], indent=2, sort_keys=True)
+
+
+__all__ = [
+    "AdversarialCase",
+    "CactusDecision",
+    "CactusFinding",
+    "CactusFuzzAgent",
+]

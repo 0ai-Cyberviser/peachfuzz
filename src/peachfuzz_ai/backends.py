@@ -214,7 +214,9 @@ class ExternalSandboxBackend:
     capabilities = BackendCapabilities(
         name="external-sandbox",
         kind=BackendKind.EXTERNAL_SANDBOX,
-        description="Future external fuzz-engine adapter; disabled until sandbox integration lands.",
+        description=(
+            "Future external fuzz-engine adapter; disabled until sandbox integration lands."
+        ),
         coverage_guided=True,
         in_process=False,
         shell_access=True,
@@ -222,7 +224,7 @@ class ExternalSandboxBackend:
         requires_authorization=True,
     )
 
-    def run(self, request: BackendRunRequest) -> BackendRunOutcome:
+    def run(self, request: BackendRunRequest) -> BackendRunOutcome:  # noqa: ARG002
         return BackendRunOutcome(
             backend=self.capabilities.name,
             result=None,
@@ -262,10 +264,8 @@ def get_backend(name: str) -> BackendAdapter:
 
 def backend_matrix_markdown(*, include_unsafe: bool = True) -> str:
     """Render backend safety matrix."""
-    rows = [
-        "| Backend | Kind | Coverage | In-process | Safe by default | Requires sandbox | Description |",
-        "|---|---|---:|---:|---:|---:|---|",
-    ]
+    header = "| Backend | Kind | Coverage | In-proc | Safe default | Sandbox | Description |"
+    rows = [header, "|---|---|---:|---:|---:|---:|---|"]
     for name in sorted(_BACKENDS):
         cap = _BACKENDS[name].capabilities
         if not include_unsafe and not cap.safe_by_default:
@@ -286,3 +286,20 @@ def backend_matrix_json(*, include_unsafe: bool = True) -> list[dict[str, object
         if include_unsafe or cap.safe_by_default:
             data.append(cap.to_dict())
     return data
+
+
+__all__ = [
+    "AtherisBackend",
+    "BackendAdapter",
+    "BackendCapabilities",
+    "BackendKind",
+    "BackendRunOutcome",
+    "BackendRunRequest",
+    "DeterministicBackend",
+    "ExternalSandboxBackend",
+    "PeachTraceBackend",
+    "backend_matrix_json",
+    "backend_matrix_markdown",
+    "backend_names",
+    "get_backend",
+]

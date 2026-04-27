@@ -20,7 +20,7 @@ def test_backend_matrix_mentions_safety():
     matrix = backend_matrix_markdown(include_unsafe=True)
     assert "deterministic" in matrix
     assert "external-sandbox" in matrix
-    assert "Requires sandbox" in matrix
+    assert "Sandbox" in matrix
 
 
 def test_backend_matrix_json_serializable():

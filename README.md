@@ -191,3 +191,20 @@ PeachFuzz v0.4.6 adds exactly 100 individually named tests covering backend adap
 pytest -q tests/test_tool_matrix_100.py
 pytest -q
 ```
+
+
+## Corpus statistics and health check
+
+PeachFuzz v0.4.7 adds a corpus statistics command for analyzing corpus directories.
+
+```bash
+peachfuzz corpus-stats corpus/json_api
+peachfuzz corpus-stats corpus/graphql corpus/webhook
+```
+
+This command provides statistics including file count, total size, min/max/average sizes, and content type analysis (JSON-like, GraphQL-like, or binary).
+
+v0.4.7 also improves error handling:
+- Robust corpus loading that handles permission errors and empty files
+- Better CLI error messages for missing payload files
+- Fixed bare except clause in build_summary.py

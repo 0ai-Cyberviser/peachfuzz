@@ -219,3 +219,12 @@ def write_minimized_result(
     payload_path.write_bytes(payload)
     json_path.write_text(result.to_json() + "\n", encoding="utf-8")
     return payload_path, json_path
+
+
+__all__ = [
+    "CrashSignature",
+    "DeltaMinimizer",
+    "MinimizeRequest",
+    "MinimizeResult",
+    "write_minimized_result",
+]

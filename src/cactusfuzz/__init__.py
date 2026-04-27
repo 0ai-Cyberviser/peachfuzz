@@ -1,7 +1,15 @@
 """CactusFuzz authorized adversarial fuzzing edition."""
 from .agent import CactusDecision, CactusFuzzAgent
-from .scope import AuthorizationScope, ScopeError
 from .guardrail_pack import GuardrailOracle, GuardrailPackReport, GuardrailScenario
+from .scope import AuthorizationScope, ScopeError
 
-__all__ = ["CactusDecision", "CactusFuzzAgent", "AuthorizationScope", "ScopeError", "GuardrailOracle", "GuardrailPackReport", "GuardrailScenario"]
-__version__ = "0.4.6"
+__all__ = [
+    "AuthorizationScope",
+    "CactusDecision",
+    "CactusFuzzAgent",
+    "GuardrailOracle",
+    "GuardrailPackReport",
+    "GuardrailScenario",
+    "ScopeError",
+]
+__version__ = "0.4.7"

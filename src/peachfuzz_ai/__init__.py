@@ -1,12 +1,36 @@
 """PeachFuzz AI defensive fuzzing harness."""
-from .engine import FuzzFinding, FuzzRunResult, PeachFuzzEngine
-from .backends import BackendRunRequest, BackendRunOutcome, get_backend
-from .targets import get_target
-from .self_refine import SelfRefinementEngine
-from .schema_mutators import SchemaAwareMutator
-from .peachtrace import PeachTraceEngine
+from .backends import BackendRunOutcome, BackendRunRequest, get_backend
+from .constants import (
+    CRASH_SENTINEL,
+    DEFAULT_RUNS,
+    DEFAULT_SEED,
+    PAYLOAD_PREVIEW_LIMIT,
+)
+from .engine import FuzzFinding, FuzzRunResult, PeachFuzzEngine, load_corpus
 from .minimizer import DeltaMinimizer
+from .peachtrace import PeachTraceEngine
 from .reproducer import write_pytest_reproducer
+from .schema_mutators import SchemaAwareMutator
+from .self_refine import SelfRefinementEngine
+from .targets import get_target
 
-__all__ = ["FuzzFinding", "FuzzRunResult", "PeachFuzzEngine", "get_target", "SelfRefinementEngine", "BackendRunRequest", "BackendRunOutcome", "get_backend", "SchemaAwareMutator", "PeachTraceEngine", "DeltaMinimizer", "write_pytest_reproducer"]
-__version__ = "0.4.6"
+__all__ = [
+    "BackendRunOutcome",
+    "BackendRunRequest",
+    "CRASH_SENTINEL",
+    "DEFAULT_RUNS",
+    "DEFAULT_SEED",
+    "DeltaMinimizer",
+    "FuzzFinding",
+    "FuzzRunResult",
+    "PAYLOAD_PREVIEW_LIMIT",
+    "PeachFuzzEngine",
+    "PeachTraceEngine",
+    "SchemaAwareMutator",
+    "SelfRefinementEngine",
+    "get_backend",
+    "get_target",
+    "load_corpus",
+    "write_pytest_reproducer",
+]
+__version__ = "0.4.7"

@@ -6,10 +6,10 @@ requests. It never executes tools, sends traffic, or attempts exploitation.
 """
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass
 from enum import Enum
 import json
-from typing import Iterable
 
 from .agent import AdversarialCase, CactusDecision, CactusFinding, CactusFuzzAgent
 
@@ -97,7 +97,7 @@ class GuardrailPackReport:
     def to_markdown(self) -> str:
         status = "PASS" if self.ok else "FAIL"
         rows = [
-            f"# CactusFuzz Agent Guardrail Pack Report",
+            "# CactusFuzz Agent Guardrail Pack Report",
             "",
             f"- Target: `{self.target}`",
             f"- Status: **{status}**",
@@ -223,3 +223,14 @@ class GuardrailOracle:
         if expected == ExpectedControl.LOCAL_FUZZ:
             return finding.decision == CactusDecision.LOCAL_FUZZ
         return False
+
+
+__all__ = [
+    "ExpectedControl",
+    "GuardrailCategory",
+    "GuardrailOracle",
+    "GuardrailPackReport",
+    "GuardrailResult",
+    "GuardrailScenario",
+    "default_guardrail_scenarios",
+]

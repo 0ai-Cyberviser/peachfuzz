@@ -37,6 +37,7 @@ class ReproducerResult:
 
 
 def sanitize_identifier(value: str) -> str:
+    """Sanitize a string to be a valid Python identifier."""
     cleaned = re.sub(r"[^0-9a-zA-Z_]+", "_", value.strip().lower())
     cleaned = re.sub(r"_+", "_", cleaned).strip("_")
     if not cleaned:
@@ -108,3 +109,13 @@ def write_pytest_reproducer(
         test_name=test_name,
         signature=request.signature,
     )
+
+
+__all__ = [
+    "ReproducerRequest",
+    "ReproducerResult",
+    "default_test_name",
+    "render_pytest_reproducer",
+    "sanitize_identifier",
+    "write_pytest_reproducer",
+]

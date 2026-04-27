@@ -16,6 +16,25 @@ def test_sanitize_identifier():
     assert sanitize_identifier("123") == "_123"
 
 
+def test_sanitize_identifier_edge_cases():
+    """Test edge cases for sanitize_identifier function."""
+    # Empty string should return 'payload'
+    assert sanitize_identifier("") == "payload"
+    # Whitespace only should return 'payload'
+    assert sanitize_identifier("   ") == "payload"
+    # Special characters only should return 'payload'
+    assert sanitize_identifier("@#$%^&*") == "payload"
+    # Single underscore only
+    assert sanitize_identifier("_") == "payload"
+    # Leading underscore is stripped by design (strip("_"))
+    assert sanitize_identifier("_valid") == "valid"
+    # Multiple leading digits get underscore prefix
+    assert sanitize_identifier("999test") == "_999test"
+    # Mixed with valid chars
+    assert sanitize_identifier("test_123_value") == "test_123_value"
+
+
+
 def test_render_pytest_reproducer_contains_base64_payload():
     content = render_pytest_reproducer(
         ReproducerRequest(

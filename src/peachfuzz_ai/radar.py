@@ -191,3 +191,15 @@ def strategic_thesis() -> str:
         "red teams, pluggable backend adapters for established fuzzers, and polished "
         "self-refinement reports that convert crashes into reviewable PRs."
     )
+
+
+__all__ = [
+    "RADAR_PROJECTS",
+    "RadarCategory",
+    "RadarProject",
+    "projects",
+    "strategic_thesis",
+    "to_json",
+    "to_markdown",
+    "top_priorities",
+]
